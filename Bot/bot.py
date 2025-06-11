@@ -156,7 +156,7 @@ async def del_key(_, msg: Message):
 async def main():
     await bot.start()
     asyncio.create_task(reset_usage_daily())
-    await bot.idle()
+    await asyncio.Event().wait()  # ✅ Keeps bot running correctly
 
 if __name__ == "__main__":
     asyncio.run(main())
