@@ -5,7 +5,7 @@ import string
 from datetime import datetime, timedelta
 
 from pyrogram import Client, filters
-from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
+from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton
 from pymongo import MongoClient
 from config import BOT_TOKEN, MONGODB_URI, MONGODB_NAME, ADMIN_USER_ID, API_ID, API_HASH
 
@@ -35,7 +35,8 @@ async def reset_usage_daily():
                         key["user_id"],
                         f"🔁 Your API key `{key['key']}` usage has been reset for today."
                     )
-                except: pass
+                except:
+                    pass
         # Notify admin
         await bot.send_message(ADMIN_USER_ID, "✅ Daily API usage reset completed for all keys.")
 
@@ -87,26 +88,6 @@ async def my_key_handler(_, msg: Message):
         f"⏳ Expires: {key_data['expiry'].strftime('%Y-%m-%d')}"
     )
 
-# Admin inline button (not used anymore per request)
-@bot.on_callback_query(filters.regex("admin_cmds"))
-async def admin_panel(_, cb: CallbackQuery):
-    if cb.from_user.id != ADMIN_USER_ID:
-        return await cb.answer("Unauthorized", show_alert=True)
-    await cb.message.edit(
-        "**🛠 Admin Commands:**\n"
-        "`/genkey <limit> <days>` – Create new key\n"
-        "`/listkeys` – List all keys\n"
-        "`/delkey <KEY>` – Delete specific key",
-        reply_markup=InlineKeyboardMarkup(
-            [[InlineKeyboardButton("🔙 Back", callback_data="back_start")]]
-        )
-    )
-
-# Back to start button
-@bot.on_callback_query(filters.regex("back_start"))
-async def back_start(_, cb: CallbackQuery):
-    await start_handler(_, cb.message)
-
 # Admin generate key
 @bot.on_message(filters.command("genkey") & filters.user(ADMIN_USER_ID))
 async def genkey(_, msg: Message):
@@ -156,7 +137,7 @@ async def del_key(_, msg: Message):
 async def main():
     await bot.start()
     asyncio.create_task(reset_usage_daily())
-    await asyncio.Event().wait()  # ✅ Keeps bot running correctly
+    await asyncio.Event().wait()  # Replaces bot.idle()
 
 if __name__ == "__main__":
     asyncio.run(main())
