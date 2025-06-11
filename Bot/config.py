@@ -4,7 +4,7 @@ API_ID = "26482250"  # Replace with your API ID from my.telegram.org
 API_HASH = "cd26ed6b35e6cef9e65e79ac6be4f7d4"  # Replace with your API Hash from my.telegram.org
 
 # MongoDB Configuration
-MONGODB_URI = "mongodb+srv://EXONTESTMONGO:EXONTESTMONGO@cluster0.bviw7ic.mongodb.net/?retryWrites=true&w=majority"  # Replace with your MongoDB connection URI (e.g., "mongodb+srv://user:pass@cluster.mongodb.net/yourdb")
+MONGODB_URI = "mongodb+srv://Mafia:Mafia@mafia.wvuzxgl.mongodb.net/?retryWrites=true&w=majority"  # Replace with your MongoDB connection URI (e.g., "mongodb+srv://user:pass@cluster.mongodb.net/yourdb")
 MONGODB_NAME = "yt_api_bot_db"  # Replace with your desired database name
 
 # Admin Configuration
