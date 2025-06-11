@@ -7,10 +7,10 @@ from datetime import datetime, timedelta
 from pyrogram import Client, filters
 from pyrogram.types import Message, InlineKeyboardMarkup, InlineKeyboardButton, CallbackQuery
 from pymongo import MongoClient
-from config import BOT_TOKEN, MONGODB_URI, MONGODB_NAME, ADMIN_USER_ID
+from config import BOT_TOKEN, MONGODB_URI, MONGODB_NAME, ADMIN_USER_ID, API_ID, API_HASH
 
 # Initialize bot and database
-bot = Client("ytapi_bot", bot_token=BOT_TOKEN, api_id=12345, api_hash="your_api_hash")  # Replace api_id/hash
+bot = Client("ytapi_bot", bot_token=BOT_TOKEN, api_id=API_ID, api_hash=API_HASH)
 mongo = MongoClient(MONGODB_URI)
 db = mongo[MONGODB_NAME]
 keys_col = db["api_keys"]
@@ -47,9 +47,6 @@ async def start_handler(_, msg: Message):
         [InlineKeyboardButton("📖 API Docs", url="https://yourapi.com/docs")],
         [InlineKeyboardButton("📢 Updates", url="https://t.me/YourChannel")]
     ]
-    if msg.from_user.id == ADMIN_USER_ID:
-        buttons.append([InlineKeyboardButton("⚙️ Admin Commands", callback_data="admin_cmds")])
-
     await msg.reply_photo(
         photo="https://i.imgur.com/JxzLWeS.png",
         caption=(
@@ -65,13 +62,17 @@ async def start_handler(_, msg: Message):
 # Help command
 @bot.on_message(filters.command("help"))
 async def help_handler(_, msg: Message):
-    await msg.reply(
+    help_text = (
         "**📚 How to Use:**\n\n"
         "`/mykey` – View your API key, usage, expiry\n\n"
         "🔗 **Use API like:**\n"
         "`https://yourapi.com/yt?query=your+song&apikey=YOUR_KEY`\n\n"
-        "**Admin Commands:** See admin button on /start."
+        "**👑 Admin Commands:**\n"
+        "`/genkey <limit> <days>` – Generate a new API key\n"
+        "`/listkeys` – List all keys\n"
+        "`/delkey <API_KEY>` – Delete a key"
     )
+    await msg.reply(help_text)
 
 # Show user their key
 @bot.on_message(filters.command("mykey"))
@@ -86,7 +87,7 @@ async def my_key_handler(_, msg: Message):
         f"⏳ Expires: {key_data['expiry'].strftime('%Y-%m-%d')}"
     )
 
-# Admin inline button
+# Admin inline button (not used anymore per request)
 @bot.on_callback_query(filters.regex("admin_cmds"))
 async def admin_panel(_, cb: CallbackQuery):
     if cb.from_user.id != ADMIN_USER_ID:
@@ -151,7 +152,11 @@ async def del_key(_, msg: Message):
     except:
         await msg.reply("❌ Usage: `/delkey <API_KEY>`")
 
-# Start bot and daily reset loop
-bot.start()
-asyncio.create_task(reset_usage_daily())
-bot.idle()
+# Start bot and reset loop
+async def main():
+    await bot.start()
+    asyncio.create_task(reset_usage_daily())
+    await bot.idle()
+
+if __name__ == "__main__":
+    asyncio.run(main())
