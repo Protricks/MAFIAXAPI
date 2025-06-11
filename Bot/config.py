@@ -1,5 +1,5 @@
 # Telegram Bot Configuration
-BOT_TOKEN = "7679518801:AAEGr2j6cQ-py-dAdM9sFEjlEzLaHsJYW9A"  # Replace with your bot token from BotFather
+BOT_TOKEN = "7919003248:AAGF3Z6gAdoFMul55s84kGuHIW0LC9MIb2E"  # Replace with your bot token from BotFather
 API_ID = "26482250"  # Replace with your API ID from my.telegram.org
 API_HASH = "cd26ed6b35e6cef9e65e79ac6be4f7d4"  # Replace with your API Hash from my.telegram.org
 
